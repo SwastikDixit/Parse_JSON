@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Data</title>
+</head>
+<body>
+    <script>
+        // Fetch JSON data from the API
+        fetch("https://s3.amazonaws.com/open-to-cors/assignment.json")
+            .then(response => {
+                // Check if the request was successful (status code 200)
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data. Status code: ${response.status}`);
+                }
+                return response.text(); // Note: Use text() instead of json()
+            })
+            .then(data => {
+                try {
+                    // Log the raw response content
+                    console.log("Raw Response:", data);
+
+                    // Parse the response text as JSON
+                    const jsonData = JSON.parse(data);
+
+                    // Ensure jsonData is an array
+                    if (!Array.isArray(jsonData)) {
+                        throw new Error("Invalid data format. Expected an array.");
+                    }
+
+                    // Assuming 'Popularity' is nested within a substructure, adjust the key accordingly
+                    const sortedData = jsonData.sort((a, b) => b.Popularity - a.Popularity);
+
+                    // Display the sorted data
+                    sortedData.forEach(product => {
+                        console.log(`Title: ${product.Title}, Price: ${product.Price}, Popularity: ${product.Popularity}`);
+                    });
+                } catch (error) {
+                    console.error("Error parsing JSON:", error.message);
+                }
+            })
+            .catch(error => {
+                console.error(error.message);
+            });
+    </script>
+</body>
+</html>
